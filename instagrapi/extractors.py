@@ -19,6 +19,7 @@ from .types import (
     MediaOembed,
     Resource,
     Story,
+    StoryHashtag,
     StoryLink,
     StoryMedia,
     StoryMention,
@@ -336,23 +337,23 @@ def extract_story_v1(data):
         StoryMention(**mention) for mention in story.get("reel_mentions", [])
     ]
     story["locations"] = []
-    story["hashtags"] = []
-    story["stickers"] = data.get('story_link_stickers') or []
+    story["hashtags"] = [
+        StoryHashtag(**hashtag) for hashtag in story.get("story_hashtags", [])
+    ]
+    story["stickers"] = []
     feed_medias = []
     story_feed_medias = data.get('story_feed_media') or []
     for feed_media in story_feed_medias:
         feed_media["media_pk"] = int(feed_media["media_id"])
         feed_medias.append(StoryMedia(**feed_media))
     story["medias"] = feed_medias
-    story["links"] = []
+    story["links"] = [
+        StoryLink(**link, webUri=link['story_link']['url']) for link in story.get("story_link_stickers",[])
+    ]
     for cta in story.get("story_cta", []):
         for link in cta.get("links", []):
             story["links"].append(StoryLink(**link))
     story["user"] = extract_user_short(story.get("user"))
-    story["sponsor_tags"] = [
-        tag["sponsor"] for tag in story.get("sponsor_tags", [])
-    ]
-    return Story(**story)
 
 
 def extract_story_gql(data):
