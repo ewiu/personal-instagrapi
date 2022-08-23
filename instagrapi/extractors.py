@@ -19,7 +19,6 @@ from .types import (
     MediaOembed,
     Resource,
     Story,
-    StoryHashtag,
     StoryLink,
     StoryMedia,
     StoryMention,
@@ -27,6 +26,7 @@ from .types import (
     User,
     UserShort,
     Usertag,
+    StoryHashtag
 )
 from .utils import InstagramIdCodec, json_value
 
@@ -354,7 +354,10 @@ def extract_story_v1(data):
         for link in cta.get("links", []):
             story["links"].append(StoryLink(**link))
     story["user"] = extract_user_short(story.get("user"))
-
+    story["sponsor_tags"] = [
+        tag["sponsor"] for tag in story.get("sponsor_tags", [])
+    ]
+    return Story(**story)
 
 def extract_story_gql(data):
     """Extract story from Public API"""
