@@ -89,7 +89,9 @@ class DownloadPhotoMixin:
         fname = urlparse(url).path.rsplit("/", 1)[1]
         filename = "%s.%s" % (filename, fname.rsplit(".", 1)[1]) if filename else fname
         path = Path(folder) / filename
-        response = requests.get(url, stream=True)
+        response = requests.get(url, stream=True, proxies=self.private.proxies)
+        #requests.get(url, stream=True)
+        
         response.raise_for_status()
         with open(path, "wb") as f:
             response.raw.decode_content = True
@@ -172,7 +174,7 @@ class UploadPhotoMixin:
             "X-Entity-Type": "image/jpeg",
             "Offset": "0",
             "X-Entity-Name": upload_name,
-            "X-Entity-Length": photo_len,
+            "X-Entity-Length": phself.privateoto_len,
             "Content-Type": "application/octet-stream",
             "Content-Length": photo_len,
         }

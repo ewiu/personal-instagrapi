@@ -83,7 +83,7 @@ class DownloadVideoMixin:
         fname = urlparse(url).path.rsplit("/", 1)[1]
         filename = "%s.%s" % (filename, fname.rsplit(".", 1)[1]) if filename else fname
         path = Path(folder) / filename
-        response = requests.get(url, stream=True)
+        response = requests.get(url, stream=True, proxies=self.public.proxies)
         response.raise_for_status()
         try:
             content_length = int(response.headers.get("Content-Length"))
