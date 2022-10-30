@@ -287,7 +287,7 @@ class StoryMixin:
             """Read the documentation https://adw0rd.github.io/instagrapi/usage-guide/story.html"""
         filename = "%s.%s" % (filename, fname.rsplit(".", 1)[1]) if filename else fname
         path = Path(folder) / filename
-        response = requests.get(url, stream=True)
+        response = requests.get(url, stream=True, proxies=self.private.proxies)
         response.raise_for_status()
         with open(path, "wb") as f:
             response.raw.decode_content = True
